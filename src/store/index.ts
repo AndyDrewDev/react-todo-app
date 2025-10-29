@@ -1,9 +1,4 @@
-import {
-  combineReducers,
-  configureStore,
-  createSlice,
-  type PayloadAction,
-} from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import {
   FLUSH, 
   PAUSE,
@@ -17,36 +12,27 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
-export type Todo = {
-  id: string
-  title: string
-  completed: boolean
-}
-
-const todosSlice = createSlice({
-  name: 'todos',
-  initialState: [] as Todo[],
-  reducers: {
-    setTodos: (_, action: PayloadAction<Todo[]>) => action.payload,
-  },
-})
+import todosReducer from '../features/todos/todosSlice'
 
 const rootReducer = combineReducers({
-  todos: todosSlice.reducer,
+  todos: todosReducer,
 })
 
 type RootReducerState = ReturnType<typeof rootReducer>
 
+// persist the todos state to Local Storage
 const persistConfig: PersistConfig<RootReducerState> = {
   key: 'root',
   storage,
   whitelist: ['todos'],
 }
 
+// persist the root reducer to Local Storage
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
   reducer: persistedReducer,
+  // ignore the actions that are not serializable
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -60,7 +46,14 @@ export const persistor = persistStore(store)
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
-export const { setTodos } = todosSlice.actions
-export const todosReducer = todosSlice.reducer
-export const selectTodos = (state: RootState) => state.todos
+export { addTodo, updateTodo, deleteTodo, setPage } from '../features/todos/todosSlice'
+export {
+  selectTodosState,
+  selectTodos,
+  selectTodosStatus,
+  selectTodosError,
+  selectTodosPage,
+  selectTodosPageSize,
+} from '../features/todos/selectors'
+export type { Todo, TodosState, TodosStatus } from '../features/todos/types'
 

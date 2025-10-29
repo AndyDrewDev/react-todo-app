@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { useDispatch, useSelector } from 'react-redux'
 
 import './App.css'
-import { selectTodos, setTodos } from './store'
+import { addTodo, deleteTodo, selectTodos, updateTodo } from './store'
 import type { AppDispatch, Todo } from './store'
 
 const createTodo = (title: string): Todo => ({
@@ -45,21 +45,29 @@ function App() {
       return
     }
 
-    const nextTodos = [...todos, createTodo(trimmed)]
-    dispatch(setTodos(nextTodos))
+    dispatch(addTodo(createTodo(trimmed)))
     setTitle('')
   }
 
   const handleToggleTodo = (id: string) => {
-    const nextTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+    const todo = todos.find((item) => item.id === id)
+
+    if (!todo) {
+      return
+    }
+
+    dispatch(
+      updateTodo({
+        id,
+        changes: {
+          completed: !todo.completed,
+        },
+      }),
     )
-    dispatch(setTodos(nextTodos))
   }
 
   const handleDeleteTodo = (id: string) => {
-    const nextTodos = todos.filter((todo) => todo.id !== id)
-    dispatch(setTodos(nextTodos))
+    dispatch(deleteTodo(id))
   }
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
