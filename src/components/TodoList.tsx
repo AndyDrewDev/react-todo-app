@@ -9,12 +9,21 @@ export type TodoListProps = {
   emptyStateText?: string
 }
 
-export const TodoList = ({ todos, onToggle, onDelete, emptyStateText }: TodoListProps) => {
+export const TodoList = ({
+  todos,
+  onToggle,
+  onDelete,
+  emptyStateText,
+}: TodoListProps) => {
   if (!todos.length) {
     return (
       <List>
         <ListItem>
-          <ListItemText primary={emptyStateText ?? 'The task list is empty. Add the first task!'} />
+          <ListItemText
+            primary={
+              emptyStateText ?? 'The task list is empty. Add the first task!'
+            }
+          />
         </ListItem>
       </List>
     )
@@ -23,11 +32,15 @@ export const TodoList = ({ todos, onToggle, onDelete, emptyStateText }: TodoList
   return (
     <List>
       {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onDelete={onDelete} />
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          onToggle={onToggle}
+          onDelete={onDelete}
+        />
       ))}
     </List>
   )
 }
 
 export default TodoList
-

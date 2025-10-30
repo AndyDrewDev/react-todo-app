@@ -74,7 +74,7 @@ export const PaginationControls = ({
           />
         )}
 
-        {onPageSizeChange && (
+        {totalPages > 1 && onPageSizeChange && (
           <FormControl size='small' sx={{ minWidth: 120 }}>
             <InputLabel id='page-size-label'>Items per page</InputLabel>
             <Select

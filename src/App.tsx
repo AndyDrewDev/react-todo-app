@@ -14,7 +14,6 @@ function App() {
     addTodo: addTodoToStore,
     toggleTodo: toggleTodoInStore,
     deleteTodo: deleteTodoFromStore,
-    loadTodos,
     page,
     pageSize,
     setPage,
@@ -26,12 +25,6 @@ function App() {
   const totalPages = getTotalPages(totalItems, pageSize)
   // clamp the page number to the total number of pages to avoid out of bounds
   const safePage = clampPage(page, totalPages)
-
-  useEffect(() => {
-    if (todos.length === 0) {
-      loadTodos()
-    }
-  }, [loadTodos, todos.length])
 
   // update the page number if it is out of bounds
   useEffect(() => {
@@ -64,10 +57,12 @@ function App() {
 
       <TodoList todos={visibleTodos} onToggle={handleToggleTodo} onDelete={handleDeleteTodo} emptyStateText="The task list is empty. Add the first task!" />
       
-      <Typography variant='body2' color='text.secondary' textAlign='center'>
-        Completed: {completedCount} / {totalItems}
-      </Typography>
-      
+      {totalItems > 0 && (
+        <Typography variant='body2' color='text.secondary' textAlign='center'>
+          Completed: {completedCount} / {totalItems}
+        </Typography>
+      )}
+
       <PaginationControls 
         page={safePage} 
         pageSize={pageSize} 
