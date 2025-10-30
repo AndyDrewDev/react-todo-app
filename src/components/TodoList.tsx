@@ -23,6 +23,7 @@ export const TodoList = ({
             primary={
               emptyStateText ?? 'The task list is empty. Add the first task!'
             }
+            sx={{ textAlign: 'center' }}
           />
         </ListItem>
       </List>

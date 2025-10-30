@@ -11,14 +11,32 @@ type LayoutProps = PropsWithChildren<{
 export const Layout = ({
   children,
   title,
-  maxWidth = 'sm',
+  maxWidth = 'md',
   spacing = 3,
   gutterY = 8,
 }: LayoutProps) => {
   return (
-    <Container component="main" maxWidth={maxWidth} sx={{ py: gutterY }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Stack spacing={spacing}>
+    <Container
+      component="main"
+      maxWidth={maxWidth}
+      disableGutters
+      sx={{
+        py: gutterY,
+        width: '100%',
+        px: { xs: 2, sm: 8, md: 12 },
+        boxSizing: 'border-box',
+        margin: '0 auto',
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 2, sm: 3, md: 4 },
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        <Stack spacing={spacing} >
           {title ? (
             <Typography component="h1" variant="h4" textAlign="center">
               {title}
