@@ -14,9 +14,11 @@ function App() {
     addTodo: addTodoToStore,
     toggleTodo: toggleTodoInStore,
     deleteTodo: deleteTodoFromStore,
+    loadTodos,
     page,
     pageSize,
     setPage,
+    setPageSize,
   } = useTodos()
   const [title, setTitle] = useState('')
 
@@ -24,6 +26,12 @@ function App() {
   const totalPages = getTotalPages(totalItems, pageSize)
   // clamp the page number to the total number of pages to avoid out of bounds
   const safePage = clampPage(page, totalPages)
+
+  useEffect(() => {
+    if (todos.length === 0) {
+      loadTodos()
+    }
+  }, [loadTodos, todos.length])
 
   // update the page number if it is out of bounds
   useEffect(() => {
@@ -54,13 +62,19 @@ function App() {
     <Layout title="Todo List">
       <TodoForm value={title} onChange={setTitle} onSubmit={handleAddTodo} label="New task" placeholder="Add a task" submitLabel="Add" />
 
-      <Typography variant="body2" color="text.secondary" textAlign="center">
+      <TodoList todos={visibleTodos} onToggle={handleToggleTodo} onDelete={handleDeleteTodo} emptyStateText="The task list is empty. Add the first task!" />
+      
+      <Typography variant='body2' color='text.secondary' textAlign='center'>
         Completed: {completedCount} / {totalItems}
       </Typography>
-
-      <TodoList todos={visibleTodos} onToggle={handleToggleTodo} onDelete={handleDeleteTodo} emptyStateText="The task list is empty. Add the first task!" />
-
-      <PaginationControls page={safePage} pageSize={pageSize} totalItems={totalItems} onPageChange={setPage} />
+      
+      <PaginationControls 
+        page={safePage} 
+        pageSize={pageSize} 
+        totalItems={totalItems} 
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </Layout>
   )
 }

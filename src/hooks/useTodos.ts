@@ -9,6 +9,7 @@ import {
   selectTodos,
   selectCompletedCount,
   setPage as setPageAction,
+  setPageSize as setPageSizeAction,
 } from '../store'
 import type { AppDispatch, Todo } from '../store'
 
@@ -60,6 +61,10 @@ export const useTodos = () => {
     dispatch(setPageAction(value))
   }
 
+  const setPageSize = (value: number) => {
+    dispatch(setPageSizeAction(value))
+  }
+
   return {
     todos,
     completedCount,
@@ -70,6 +75,7 @@ export const useTodos = () => {
     page,
     pageSize,
     setPage,
+    setPageSize,
   }
 }
 

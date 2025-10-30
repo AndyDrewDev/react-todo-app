@@ -42,6 +42,11 @@ export const todosSlice = createSlice({
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload
     },
+    setPageSize: (state, action: PayloadAction<number>) => {
+      state.pageSize = action.payload
+      // Reset to page 1 when page size changes
+      state.page = 1
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -61,7 +66,7 @@ export const todosSlice = createSlice({
   },
 })
 
-export const { addTodo, updateTodo, deleteTodo, setPage } = todosSlice.actions
+export const { addTodo, updateTodo, deleteTodo, setPage, setPageSize } = todosSlice.actions
 
 export default todosSlice.reducer
 

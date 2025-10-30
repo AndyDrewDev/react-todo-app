@@ -51,6 +51,7 @@ export {
   updateTodo,
   deleteTodo,
   setPage,
+  setPageSize,
   fetchTodos,
 } from '../features/todos/todosSlice'
 
