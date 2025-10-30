@@ -1,6 +1,6 @@
 import type { Todo } from '../features/todos/types'
 
-const TODOS_URL = 'https://jsonplaceholder.typicode.com/todos?_limit=5'
+const TODOS_URL = 'https://jsonplaceholder.typicode.com/todos?_limit=50'
 
 type JsonPlaceholderTodo = {
   id: number
