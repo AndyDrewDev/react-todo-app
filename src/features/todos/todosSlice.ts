@@ -1,6 +1,15 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import type { Todo, TodosState } from './types'
+import { fetchTodos as fetchTodosApi } from '../../api/todosApi'
+
+export const fetchTodos = createAsyncThunk<
+  Todo[],
+  void
+>('todos/fetchTodos', async () => {
+    const todos = await fetchTodosApi()
+    return todos
+})
 
 const initialState: TodosState = {
   todos: [],
@@ -33,6 +42,22 @@ export const todosSlice = createSlice({
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTodos.pending, (state) => {
+        state.status = 'loading'
+        state.error = null
+      })
+      .addCase(fetchTodos.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        state.error = null
+        state.todos = action.payload
+      })
+      .addCase(fetchTodos.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message ?? 'Failed to load todos.'
+      })
   },
 })
 

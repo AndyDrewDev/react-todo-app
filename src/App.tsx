@@ -1,24 +1,11 @@
 
-import { useState, type KeyboardEventHandler } from 'react'
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { useEffect, useMemo, useState } from 'react'
+import { Typography } from '@mui/material'
 import './App.css'
+import { Layout, PaginationControls, TodoForm, TodoList } from './components'
 import { useTodos } from './hooks/useTodos'
 import type { Todo } from './store'
+import { clampPage, getTotalPages, paginate } from './utils'
 
 function App() {
   const {
@@ -27,8 +14,25 @@ function App() {
     addTodo: addTodoToStore,
     toggleTodo: toggleTodoInStore,
     deleteTodo: deleteTodoFromStore,
+    page,
+    pageSize,
+    setPage,
   } = useTodos()
   const [title, setTitle] = useState('')
+
+  const totalItems = todos.length
+  const totalPages = getTotalPages(totalItems, pageSize)
+  // clamp the page number to the total number of pages to avoid out of bounds
+  const safePage = clampPage(page, totalPages)
+
+  // update the page number if it is out of bounds
+  useEffect(() => {
+    if (safePage !== page) {
+      setPage(safePage)
+    }
+  }, [page, safePage, setPage])
+
+  const visibleTodos = useMemo(() => paginate(todos, safePage, pageSize), [todos, safePage, pageSize])
 
   const handleAddTodo = () => {
     const added = addTodoToStore(title)
@@ -42,87 +46,22 @@ function App() {
     toggleTodoInStore(todo)
   }
 
-  const handleDeleteTodo = (todo: Todo) => {
-    deleteTodoFromStore(todo)
-  }
-
-  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      handleAddTodo()
-    }
+  const handleDeleteTodo = (id: string) => {
+    deleteTodoFromStore(id)
   }
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Box sx={{ py: 8 }}>
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Stack spacing={3}>
-            <Typography component="h1" variant="h4" textAlign="center">
-              Todo List
-            </Typography>
+    <Layout title="Todo List">
+      <TodoForm value={title} onChange={setTitle} onSubmit={handleAddTodo} label="New task" placeholder="Add a task" submitLabel="Add" />
 
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-              <TextField
-                fullWidth
-                label="New task"
-                placeholder="Add a task"
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddTodo}
-                sx={{ whiteSpace: 'nowrap' }}
-              >
-                Add
-              </Button>
-            </Stack>
+      <Typography variant="body2" color="text.secondary" textAlign="center">
+        Completed: {completedCount} / {totalItems}
+      </Typography>
 
-            <Typography variant="body2" color="text.secondary" textAlign="right">
-              Completed: {completedCount} / {todos.length}
-            </Typography>
+      <TodoList todos={visibleTodos} onToggle={handleToggleTodo} onDelete={handleDeleteTodo} emptyStateText="The task list is empty. Add the first task!" />
 
-            <List>
-              {todos.map((todo) => (
-                <ListItem
-                  key={todo.id}
-                  secondaryAction={
-                    <IconButton edge="end" aria-label="Delete" onClick={() => handleDeleteTodo(todo)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <ListItemIcon>
-                    <Checkbox
-                      edge="start"
-                      checked={todo.completed}
-                      tabIndex={-1}
-                      disableRipple
-                      onChange={() => handleToggleTodo(todo)}
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={todo.title}
-                    sx={{
-                      textDecoration: todo.completed ? 'line-through' : 'none',
-                      color: todo.completed ? 'text.disabled' : 'text.primary',
-                    }}
-                  />
-                </ListItem>
-              ))}
-              {todos.length === 0 && (
-                <ListItem>
-                  <ListItemText primary="The task list is empty. Add the first task!" />
-                </ListItem>
-              )}
-            </List>
-          </Stack>
-        </Paper>
-      </Box>
-    </Container>
+      <PaginationControls page={safePage} pageSize={pageSize} totalItems={totalItems} onPageChange={setPage} />
+    </Layout>
   )
 }
 

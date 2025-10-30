@@ -12,3 +12,6 @@ export const selectTodosPage = (state: RootState) => selectTodosState(state).pag
 
 export const selectTodosPageSize = (state: RootState) => selectTodosState(state).pageSize
 
+export const selectCompletedCount = (state: RootState) =>
+  selectTodos(state).filter((todo) => todo.completed).length
+

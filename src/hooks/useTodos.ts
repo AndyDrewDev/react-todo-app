@@ -2,8 +2,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   addTodo as addTodoAction,
   deleteTodo as deleteTodoAction,
-  selectTodos,
+  fetchTodos as fetchTodosThunk,
+  selectTodosPage,
+  selectTodosPageSize,
   updateTodo as updateTodoAction,
+  selectTodos,
+  selectCompletedCount,
+  setPage as setPageAction,
 } from '../store'
 import type { AppDispatch, Todo } from '../store'
 
@@ -15,9 +20,10 @@ const createTodo = (title: string): Todo => ({
 
 export const useTodos = () => {
   const todos = useSelector(selectTodos)
+  const page = useSelector(selectTodosPage)
+  const pageSize = useSelector(selectTodosPageSize)
+  const completedCount = useSelector(selectCompletedCount)
   const dispatch = useDispatch<AppDispatch>()
-
-  const completedCount = todos.filter((todo) => todo.completed).length
 
   const addTodo = (title: string) => {
     const trimmed = title.trim()
@@ -42,8 +48,16 @@ export const useTodos = () => {
     )
   }
 
-  const deleteTodo = (todo: Todo) => {
-    dispatch(deleteTodoAction(todo.id))
+  const deleteTodo = (id: string) => {
+    dispatch(deleteTodoAction(id))
+  }
+
+  const loadTodos = () => {
+    return dispatch(fetchTodosThunk())
+  }
+
+  const setPage = (value: number) => {
+    dispatch(setPageAction(value))
   }
 
   return {
@@ -52,6 +66,10 @@ export const useTodos = () => {
     addTodo,
     toggleTodo,
     deleteTodo,
+    loadTodos,
+    page,
+    pageSize,
+    setPage,
   }
 }
 

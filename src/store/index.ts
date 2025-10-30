@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import {
-  FLUSH, 
+  FLUSH,
   PAUSE,
   PERSIST,
   PURGE,
@@ -46,7 +46,14 @@ export const persistor = persistStore(store)
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
-export { addTodo, updateTodo, deleteTodo, setPage } from '../features/todos/todosSlice'
+export {
+  addTodo,
+  updateTodo,
+  deleteTodo,
+  setPage,
+  fetchTodos,
+} from '../features/todos/todosSlice'
+
 export {
   selectTodosState,
   selectTodos,
@@ -54,6 +61,6 @@ export {
   selectTodosError,
   selectTodosPage,
   selectTodosPageSize,
+  selectCompletedCount,
 } from '../features/todos/selectors'
 export type { Todo, TodosState, TodosStatus } from '../features/todos/types'
-
