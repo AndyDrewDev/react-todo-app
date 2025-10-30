@@ -1,5 +1,5 @@
 
-import { useMemo, useState, type KeyboardEventHandler } from 'react'
+import { useState, type KeyboardEventHandler } from 'react'
 import {
   Box,
   Button,
@@ -16,58 +16,34 @@ import {
   Typography,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useDispatch, useSelector } from 'react-redux'
-
 import './App.css'
-import { addTodo, deleteTodo, selectTodos, updateTodo } from './store'
-import type { AppDispatch, Todo } from './store'
-
-const createTodo = (title: string): Todo => ({
-  id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
-  title,
-  completed: false,
-})
+import { useTodos } from './hooks/useTodos'
+import type { Todo } from './store'
 
 function App() {
-  const todos = useSelector(selectTodos)
-  const dispatch = useDispatch<AppDispatch>()
+  const {
+    todos,
+    completedCount,
+    addTodo: addTodoToStore,
+    toggleTodo: toggleTodoInStore,
+    deleteTodo: deleteTodoFromStore,
+  } = useTodos()
   const [title, setTitle] = useState('')
 
-  const completedCount = useMemo(
-    () => todos.filter((todo) => todo.completed).length,
-    [todos],
-  )
-
   const handleAddTodo = () => {
-    const trimmed = title.trim()
+    const added = addTodoToStore(title)
 
-    if (!trimmed) {
-      return
+    if (added) {
+      setTitle('')
     }
-
-    dispatch(addTodo(createTodo(trimmed)))
-    setTitle('')
   }
 
-  const handleToggleTodo = (id: string) => {
-    const todo = todos.find((item) => item.id === id)
-
-    if (!todo) {
-      return
-    }
-
-    dispatch(
-      updateTodo({
-        id,
-        changes: {
-          completed: !todo.completed,
-        },
-      }),
-    )
+  const handleToggleTodo = (todo: Todo) => {
+    toggleTodoInStore(todo)
   }
 
-  const handleDeleteTodo = (id: string) => {
-    dispatch(deleteTodo(id))
+  const handleDeleteTodo = (todo: Todo) => {
+    deleteTodoFromStore(todo)
   }
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
@@ -114,7 +90,7 @@ function App() {
                 <ListItem
                   key={todo.id}
                   secondaryAction={
-                    <IconButton edge="end" aria-label="Delete" onClick={() => handleDeleteTodo(todo.id)}>
+                    <IconButton edge="end" aria-label="Delete" onClick={() => handleDeleteTodo(todo)}>
                       <DeleteIcon />
                     </IconButton>
                   }
@@ -125,7 +101,7 @@ function App() {
                       checked={todo.completed}
                       tabIndex={-1}
                       disableRipple
-                      onChange={() => handleToggleTodo(todo.id)}
+                      onChange={() => handleToggleTodo(todo)}
                     />
                   </ListItemIcon>
                   <ListItemText
