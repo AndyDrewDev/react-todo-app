@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Uncomment the following line if you encounter issues with rolldown on ARM architecture (Apple Silicon)
+      # platform: linux/amd64
+    ports:
+      - "3000:80"
+    container_name: react-todo-app
+    restart: unless-stopped
+

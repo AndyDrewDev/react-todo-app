@@ -69,12 +69,15 @@ react-todo-app/
 ├── tsconfig.json           # TypeScript configuration
 ├── tsconfig.app.json       # TypeScript app config
 ├── tsconfig.node.json      # TypeScript node config
-└── vite.config.ts          # Vite configuration
+├── vite.config.ts          # Vite configuration
+├── Dockerfile              # Docker multi-stage build configuration
+├── .dockerignore           # Docker ignore file
+└── docker-compose.yml      # Docker Compose configuration
 ```
 
 ## Prerequisites
 
-- Node.js (version 18 or higher recommended)
+- Node.js (version 20.19+ or 22.12+ required for Vite)
 - npm (comes with Node.js)
 
 ## Installation
@@ -118,6 +121,73 @@ To preview the production build locally:
 
 ```bash
 npm run preview
+```
+
+### Docker Deployment
+
+The project includes Docker configuration for easy deployment using multi-stage build.
+
+#### Prerequisites
+
+- Docker (version 20.10 or higher)
+- Docker Compose (version 2.0 or higher)
+
+#### Building and Running with Docker Compose
+
+The easiest way to run the application in Docker:
+
+```bash
+docker-compose up --build
+```
+
+The application will be available at `http://localhost:3000`.
+
+To run in detached mode:
+
+```bash
+docker-compose up -d --build
+```
+
+To stop the container:
+
+```bash
+docker-compose down
+```
+
+#### Building and Running with Docker
+
+Alternatively, you can build and run the Docker image directly:
+
+```bash
+# Build the image
+docker build -t react-todo-app .
+
+# Run the container
+docker run -p 3000:80 react-todo-app
+```
+
+The application will be available at `http://localhost:3000`.
+
+#### Docker Configuration
+
+- **Dockerfile**: Multi-stage build using `node:20-alpine` for building and `nginx:alpine` for serving
+- **.dockerignore**: Excludes unnecessary files from the build context
+- **docker-compose.yml**: Simple configuration for running the application
+
+The Docker setup:
+1. Builds the React application using Node.js 20
+2. Serves the production build using Nginx
+3. Exposes the application on port 80 (mapped to port 3000 on the host)
+
+#### Troubleshooting
+
+If you encounter issues with rolldown native bindings on ARM architecture (Apple Silicon Macs), you can force the build to use x86_64 platform by uncommenting the `platform: linux/amd64` line in `docker-compose.yml`:
+
+```yaml
+build:
+  context: .
+  dockerfile: Dockerfile
+  platform: linux/amd64  # Uncomment this line
 ```
 
 ### Linting
