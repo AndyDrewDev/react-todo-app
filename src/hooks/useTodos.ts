@@ -53,6 +53,10 @@ export const useTodos = () => {
     dispatch(deleteTodoAction(id))
   }
 
+  const updateTodo = (id: string, changes: Partial<Omit<Todo, 'id'>>) => {
+    dispatch(updateTodoAction({ id, changes }))
+  }
+
   const loadTodos = () => {
     return dispatch(fetchTodosThunk())
   }
@@ -71,6 +75,7 @@ export const useTodos = () => {
     addTodo,
     toggleTodo,
     deleteTodo,
+    updateTodo,
     loadTodos,
     page,
     pageSize,

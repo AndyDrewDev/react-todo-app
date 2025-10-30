@@ -14,6 +14,7 @@ function App() {
     addTodo: addTodoToStore,
     toggleTodo: toggleTodoInStore,
     deleteTodo: deleteTodoFromStore,
+    updateTodo: updateTodoInStore,
     page,
     pageSize,
     setPage,
@@ -51,11 +52,15 @@ function App() {
     deleteTodoFromStore(id)
   }
 
+  const handleEditTodo = (id: string, title: string) => {
+    updateTodoInStore(id, { title })
+  }
+
   return (
     <Layout title="Todo List">
       <TodoForm value={title} onChange={setTitle} onSubmit={handleAddTodo} label="New task" placeholder="Add a task" submitLabel="Add" />
 
-      <TodoList todos={visibleTodos} onToggle={handleToggleTodo} onDelete={handleDeleteTodo} emptyStateText="The task list is empty. Add the first task!" />
+      <TodoList todos={visibleTodos} onToggle={handleToggleTodo} onDelete={handleDeleteTodo} onEdit={handleEditTodo} emptyStateText="The task list is empty. Add the first task!" />
       
       {totalItems > 0 && (
         <Typography variant='body2' color='text.secondary' textAlign='center'>
