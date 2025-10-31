@@ -43,7 +43,9 @@ export const PaginationControls = ({
     onPageSizeChange?.(newPageSize)
   }
 
-  if (totalPages <= 1 && !onPageSizeChange) {
+  const shouldShowPageSize = totalItems > 10 && onPageSizeChange
+
+  if (totalPages <= 1 && !shouldShowPageSize) {
     return null
   }
 
@@ -57,7 +59,7 @@ export const PaginationControls = ({
       <Stack
         direction='row'
         alignItems='center'
-        justifyContent='space-between'
+        justifyContent={totalPages > 1 ? 'space-between' : 'flex-end'}
         spacing={2}
         sx={{ width: '100%' }}
       >
@@ -74,7 +76,7 @@ export const PaginationControls = ({
           />
         )}
 
-        {totalPages > 1 && onPageSizeChange && (
+        {shouldShowPageSize && (
           <FormControl size='small' sx={{ minWidth: 120 }}>
             <InputLabel id='page-size-label'>Items per page</InputLabel>
             <Select
