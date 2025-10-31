@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import type { FormEvent } from 'react'
 import { Button, Stack, TextField } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
 import { useTodos } from '../hooks/useTodos'
 
 export type TodoFormProps = {
@@ -62,6 +63,7 @@ export const TodoForm = ({
           type='submit'
           variant='contained'
           color='primary'
+          startIcon={<AddIcon />}
           sx={{ whiteSpace: 'nowrap' }}
         >
           {submitLabel}

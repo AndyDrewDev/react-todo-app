@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   addTodo as addTodoAction,
   deleteTodo as deleteTodoAction,
+  deleteAllTodos as deleteAllTodosAction,
   fetchTodos as fetchTodosThunk,
   selectTodosPage,
   selectTodosPageSize,
@@ -53,6 +54,10 @@ export const useTodos = () => {
     dispatch(deleteTodoAction(id))
   }
 
+  const deleteAllTodos = () => {
+    dispatch(deleteAllTodosAction())
+  }
+
   const updateTodo = (id: string, changes: Partial<Omit<Todo, 'id'>>) => {
     dispatch(updateTodoAction({ id, changes }))
   }
@@ -75,6 +80,7 @@ export const useTodos = () => {
     addTodo,
     toggleTodo,
     deleteTodo,
+    deleteAllTodos,
     updateTodo,
     loadTodos,
     page,

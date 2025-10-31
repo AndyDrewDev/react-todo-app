@@ -50,6 +50,7 @@ export {
   addTodo,
   updateTodo,
   deleteTodo,
+  deleteAllTodos,
   setPage,
   setPageSize,
   fetchTodos,

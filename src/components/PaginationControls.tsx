@@ -5,6 +5,8 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
 import type { SelectChangeEvent } from '@mui/material'
 import { clampPage, getTotalPages } from '../utils/pagination'
@@ -28,6 +30,8 @@ export const PaginationControls = ({
   onPageSizeChange,
   disabled = false,
 }: PaginationControlsProps) => {
+  const theme = useTheme()
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'))
   const totalPages = getTotalPages(totalItems, pageSize)
   const safePage = clampPage(page, totalPages)
 
@@ -73,11 +77,14 @@ export const PaginationControls = ({
             shape='rounded'
             showFirstButton={false}
             showLastButton={false}
+            size={isTablet ? 'small' : 'medium'}
+            siblingCount={isTablet ? 0 : 2}
+            boundaryCount={2}
           />
         )}
 
         {shouldShowPageSize && (
-          <FormControl size='small' sx={{ minWidth: 120 }}>
+          <FormControl size='small' sx={{ minWidth: 110 }}>
             <InputLabel id='page-size-label'>Items per page</InputLabel>
             <Select
               labelId='page-size-label'

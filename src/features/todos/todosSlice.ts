@@ -24,7 +24,7 @@ export const todosSlice = createSlice({
   initialState,
   reducers: {
     addTodo: (state, action: PayloadAction<Todo>) => {
-      state.todos.push(action.payload)
+      state.todos.unshift(action.payload)
     },
     updateTodo: (
       state,
@@ -38,6 +38,10 @@ export const todosSlice = createSlice({
     },
     deleteTodo: (state, action: PayloadAction<string>) => {
       state.todos = state.todos.filter((todo) => todo.id !== action.payload)
+    },
+    deleteAllTodos: (state) => {
+      state.todos = []
+      state.page = 1
     },
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload
@@ -66,7 +70,7 @@ export const todosSlice = createSlice({
   },
 })
 
-export const { addTodo, updateTodo, deleteTodo, setPage, setPageSize } = todosSlice.actions
+export const { addTodo, updateTodo, deleteTodo, deleteAllTodos, setPage, setPageSize } = todosSlice.actions
 
 export default todosSlice.reducer
 

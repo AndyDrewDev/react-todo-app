@@ -1,6 +1,6 @@
-
 import { useEffect, useMemo, useState } from 'react'
-import { Typography } from '@mui/material'
+import { Button, Stack, Typography } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 import './App.css'
 import { Layout, PaginationControls, TodoForm, TodoList } from './components'
 import { useTodos } from './hooks/useTodos'
@@ -14,6 +14,7 @@ function App() {
     addTodo: addTodoToStore,
     toggleTodo: toggleTodoInStore,
     deleteTodo: deleteTodoFromStore,
+    deleteAllTodos: deleteAllTodosFromStore,
     updateTodo: updateTodoInStore,
     page,
     pageSize,
@@ -34,7 +35,10 @@ function App() {
     }
   }, [page, safePage, setPage])
 
-  const visibleTodos = useMemo(() => paginate(todos, safePage, pageSize), [todos, safePage, pageSize])
+  const visibleTodos = useMemo(
+    () => paginate(todos, safePage, pageSize),
+    [todos, safePage, pageSize]
+  )
 
   const handleAddTodo = () => {
     const added = addTodoToStore(title)
@@ -56,25 +60,64 @@ function App() {
     updateTodoInStore(id, { title })
   }
 
-  return (
-    <Layout title="Todo List">
-      <TodoForm value={title} onChange={setTitle} onSubmit={handleAddTodo} label="New task" placeholder="Add a task" submitLabel="Add" />
+  const handleDeleteAllTodos = () => {
+    if (window.confirm('Are you sure you want to delete all todos?')) {
+      deleteAllTodosFromStore()
+    }
+  }
 
-      <TodoList todos={visibleTodos} onToggle={handleToggleTodo} onDelete={handleDeleteTodo} onEdit={handleEditTodo} emptyStateText="The task list is empty. Add the first task!" />
-      
+  return (
+    <Layout title='Todo List'>
+      <Stack spacing={2}>
+        <TodoForm
+          value={title}
+          onChange={setTitle}
+          onSubmit={handleAddTodo}
+          label='New task'
+          placeholder='Add a task'
+          submitLabel='Add'
+        />
+
+        {totalItems > 0 && (
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent='center'
+            alignItems='stretch'
+          >
+            <Button
+              variant='contained'
+              color='error'
+              startIcon={<DeleteIcon />}
+              onClick={handleDeleteAllTodos}
+              sx={{ py: 1, width: { xs: '100%', sm: 'auto' } }}
+              size='small'
+            >
+              Clear all tasks
+            </Button>
+          </Stack>
+        )}
+      </Stack>
+
+      <TodoList
+        todos={visibleTodos}
+        onToggle={handleToggleTodo}
+        onDelete={handleDeleteTodo}
+        onEdit={handleEditTodo}
+        emptyStateText='The task list is empty. Add the first task!'
+      />
+
+      <PaginationControls
+        page={safePage}
+        pageSize={pageSize}
+        totalItems={totalItems}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
       {totalItems > 0 && (
         <Typography variant='body2' color='text.secondary' textAlign='center'>
           Completed: {completedCount} / {totalItems}
         </Typography>
       )}
-
-      <PaginationControls 
-        page={safePage} 
-        pageSize={pageSize} 
-        totalItems={totalItems} 
-        onPageChange={setPage}
-        onPageSizeChange={setPageSize}
-      />
     </Layout>
   )
 }
